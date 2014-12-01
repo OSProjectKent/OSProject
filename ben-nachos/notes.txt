@@ -1,0 +1,93 @@
+ANSWERED: When is current_queue set := in timerInterrupt?
+Why does newThreadQueue take transferPriority?
+
+Changelog - 12/1 - Ben
+-ADDED: description comments for timerInterrupt() function in MultilevelQueueScheduler
+-ADDED: MultilevelQueueSchedulerTest.java
+
+class - MultilevelQueueScheduler {
+  Methods:
+	static void runProject()
+  Objects:
+	class - ThreadTask -implements- Runnable
+}
+
+	class - ThreadTask -implements- Runnable {
+	  Methods:
+		constructor ThreadTask(int id)
+		void 		terminate()
+		void 		run()
+		@override
+		void		runProject()
+	  Objects:
+		final 	int id
+		boolean terminated
+	}
+
+
+
+//Main scheduler file
+class - MultilevelQueueScheduler -extends- Scheduler {
+  Methods:
+	Constructor	MultilevelQueueScheduler()
+	ThreadQueue	newThreadQueue(bool transferPriority)
+	Bool 		timerInterrupt()
+	void 		selfTest()
+  
+  Objects:
+	int   interrupt_interval_counter
+	int	  current_queue
+	class MultilevelQueue - ThreadQueue
+}
+	
+	class -MultilevelQueue -extends- ThreadQueue {
+	  Methods:
+		constructor	MultilevelQueue()
+		void 		waitForAccess(KThread thread)
+		KThread 	nextThread()
+		void 		aquire(KThread thread)
+		void 		print()
+	  Objects:
+		vector 		wait_queue
+	}
+
+class - KThread {
+  Methods:
+	KThread 	currentThread() 	//getter
+	constructor KThread()
+	constructor KThread(Runnable target) 		//passing a class that extends KThread to KThread
+	KThread 	setThread(Runnable target) 		//set current thread to target
+	KThread 	setName(String name)
+	String 		getName()
+	String 		toString() 			// get name and id
+	int 		compareTo(Object o) //compare threads - probably won't use this
+	void 		fork() 				// Set the thread to be runnable
+	void 		runThread() 		// actually run the thread
+	void 		begin()
+	static void finish()
+	static void yield() 			//relinquish control
+	static void sleep()				
+	void		ready()				 
+	
+  Objects:
+	static final char 	dbgThread 		= 't'
+	Object 			  	schedulingState
+	static final int 	statusNew 		= 0
+	static final int 	statusReady 	= 1
+	static final int 	statusRunning 	= 2
+	static final int 	statusBlocked 	= 3
+	static final int 	statusFinished 	= 4
+
+	int 		status
+	String 		name
+	Runnable 	target
+	TCB 		tcb
+
+	int 				id 				= numCreated++
+	static int 			numCreated 		= 0
+	static ThreadQueue 	readyQueue 		= null
+	static KThread 		currentThread 	= null
+	static KThread 		toBeDestroyed 	= null
+	static KThread 		idleThread 		= null
+	Linkedlist<KThread> joinQueue 		= new
+}

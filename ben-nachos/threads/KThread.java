@@ -207,7 +207,7 @@ public class KThread {
 
     Lib.debug(dbgThread, "Forking thread: " + toString());
 
-		System.out.println(this.getName() + " job started at time: " + Machine.timer().getTime());
+		System.out.println("Job #" + this.getName() + " started at time: " + Machine.timer().getTime());
 
     boolean intStatus = Machine.interrupt().disable();
 

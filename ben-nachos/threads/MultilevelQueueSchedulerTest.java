@@ -28,14 +28,15 @@ public class MultilevelQueueSchedulerTest {
 		public long constructTime;
 		public long forkTime;
 		public long terminatedTime;
-
+		
+		public Random	r = new Random();
 //  public boolean io;
 
     public ThreadTask(int id) {
       this.id = id;
       this.terminated = false;
 			this.constructTime = Machine.timer().getTime();
-			System.out.println("Job #" + id + " has started");
+			System.out.println("Job #" + id + " has been created");
     } 
 
     public void terminate() {
@@ -45,15 +46,19 @@ public class MultilevelQueueSchedulerTest {
     
     @Override
     public void run() {
+			System.out.println("### run()");
       // Do stuff here
 
       //print thread name 
-      System.out.print("thread " + KThread.currentThread().getName() + " started");
-			System.out.println(" | " + Machine.timer().getTime());
+//      System.out.print("thread " + KThread.currentThread().getName() + " started");
+//			System.out.println(" | " + Machine.timer().getTime());
 
       // Do 800 'ticks' of computation
       while(!terminated) {
-        Machine.interrupt().tick(800);
+			  int randomNum = r.nextInt((1800) + 1) + 300;
+				System.out.println("Job #" + id + " has " + randomNum + " computation ticks");
+        Machine.interrupt().tick(randomNum);
+				terminate();
       }
 
       
@@ -62,7 +67,9 @@ public class MultilevelQueueSchedulerTest {
 
   public static void run_Project() {
     System.out.println("\n### Running MLQS project ###");
+		System.out.println();
 
+		System.out.println("### create jobs ###");
     // create workers
     ThreadTask worker1 = new ThreadTask(1);
     ThreadTask worker2 = new ThreadTask(2);
@@ -86,44 +93,48 @@ public class MultilevelQueueSchedulerTest {
     KThread thread9 = new KThread(worker9);
 
     // name the threads
-    thread1.setName("KThread - 1");
-    thread2.setName("KThread - 2");
-    thread3.setName("KThread - 3");
-    thread4.setName("KThread - 4");
-    thread5.setName("KThread - 5");
-    thread6.setName("KThread - 6");
-    thread7.setName("KThread - 7");
-    thread8.setName("KThread - 8");
-    thread9.setName("KThread - 9");
+    thread1.setName("1");
+    thread2.setName("2");
+    thread3.setName("3");
+    thread4.setName("4");
+    thread5.setName("5");
+    thread6.setName("6");
+    thread7.setName("7");
+    thread8.setName("8");
+    thread9.setName("9");
 
     // start running the threads
 
+		System.out.println("\n");
+		System.out.println("### move jobs to queue ###");
+		worker1.forkTime = Machine.timer().getTime();
+    thread1.fork();
+		worker2.forkTime = Machine.timer().getTime();
+    thread2.fork();
+		worker3.forkTime = Machine.timer().getTime();
+	  thread3.fork();
+ 		worker4.forkTime = Machine.timer().getTime();
+   	thread4.fork();
+ 		worker5.forkTime = Machine.timer().getTime();
+   	thread5.fork();
+ 		worker6.forkTime = Machine.timer().getTime();
+   	thread6.fork();
+ 		worker7.forkTime = Machine.timer().getTime();
+   	thread7.fork();
+ 		worker8.forkTime = Machine.timer().getTime();
+   	thread8.fork();
+ 		worker9.forkTime = Machine.timer().getTime();
+   	thread9.fork();
 		System.out.println("\n\n");
 
-		worker1.forkTime = Machine.timer().getTime(); System.out.print(worker1.forkTime + " ");
-    thread1.fork();
-		worker2.forkTime = Machine.timer().getTime(); System.out.print(worker2.forkTime + " ");
-    thread2.fork();
-		worker3.forkTime = Machine.timer().getTime(); System.out.print(worker3.forkTime + " ");
-	  thread3.fork();
- 		worker4.forkTime = Machine.timer().getTime(); System.out.print(worker4.forkTime + " ");
-   	thread4.fork();
- 		worker5.forkTime = Machine.timer().getTime(); System.out.print(worker5.forkTime + " ");
-   	thread5.fork();
- 		worker6.forkTime = Machine.timer().getTime(); System.out.print(worker6.forkTime + " ");
-   	thread6.fork();
- 		worker7.forkTime = Machine.timer().getTime(); System.out.print(worker7.forkTime + " ");
-   	thread7.fork();
- 		worker8.forkTime = Machine.timer().getTime(); System.out.print(worker8.forkTime + " ");
-   	thread8.fork();
- 		worker9.forkTime = Machine.timer().getTime(); System.out.print(worker9.forkTime + " ");
-   	thread9.fork();
+		//print initial status of queues
+//		MultilevelQueue.printStatus();
 
     // let the threads run for x ticks
     ThreadedKernel.alarm.waitUntil(5000);
 
     //kill threads
-    worker1.terminate();
+/*    worker1.terminate();
     worker2.terminate();
     worker3.terminate();
     worker4.terminate();
@@ -131,7 +142,7 @@ public class MultilevelQueueSchedulerTest {
     worker6.terminate();
     worker7.terminate();
     worker8.terminate();
-    worker9.terminate();
+    worker9.terminate(); */
 
     //wait until all threads are done
     thread1.join();

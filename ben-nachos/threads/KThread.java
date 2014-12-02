@@ -207,6 +207,8 @@ public class KThread {
 
     Lib.debug(dbgThread, "Forking thread: " + toString());
 
+		System.out.println(this.getName() + " job started at time: " + Machine.timer().getTime());
+
     boolean intStatus = Machine.interrupt().disable();
 
     tcb.start(new Runnable() {
@@ -459,31 +461,34 @@ public class KThread {
   /**
    * Sets the priority of a thread()
    */
-  public void setPriority(int priority) {
-    /* Disable interrupts */
+  public void setPriority(int p) {
+		this.priority = p; 
+/*
     boolean intStatus = Machine.interrupt().disable();
 
-    /* Talk to the scheduler */
     ThreadedKernel.scheduler.setPriority(this, priority);
 
-    /* Restore interrupts */
     Machine.interrupt().restore(intStatus);
+*/
   }
+
+
+	public int priority = -1;
 
   /**
    * Gets the priority of a thread()
    */
   public int getPriority() {
-    /* Disable interrupts */
+		return this.priority;
+/*
     boolean intStatus = Machine.interrupt().disable();
 
-    /* Talk to the scheduler */
     int priority = ThreadedKernel.scheduler.getPriority(this);
 
-    /* Restore interrupts */
     Machine.interrupt().restore(intStatus);
 
     return priority;
+*/
   }
 
   /**

@@ -26,6 +26,7 @@ public class MultilevelQueueSchedulerTest {
     public final int id;
     public boolean terminated;
 		public long constructTime;
+		public long forkTime;
 		public long terminatedTime;
 
 //  public boolean io;
@@ -47,7 +48,8 @@ public class MultilevelQueueSchedulerTest {
       // Do stuff here
 
       //print thread name 
-      System.out.println("thread " + KThread.currentThread().getName() + " started");
+      System.out.print("thread " + KThread.currentThread().getName() + " started");
+			System.out.println(" | " + Machine.timer().getTime());
 
       // Do 800 'ticks' of computation
       while(!terminated) {
@@ -95,15 +97,27 @@ public class MultilevelQueueSchedulerTest {
     thread9.setName("KThread - 9");
 
     // start running the threads
+
+		System.out.println("\n\n");
+
+		worker1.forkTime = Machine.timer().getTime(); System.out.print(worker1.forkTime + " ");
     thread1.fork();
+		worker2.forkTime = Machine.timer().getTime(); System.out.print(worker2.forkTime + " ");
     thread2.fork();
-    thread3.fork();
-    thread4.fork();
-    thread5.fork();
-    thread6.fork();
-    thread7.fork();
-    thread8.fork();
-    thread9.fork();
+		worker3.forkTime = Machine.timer().getTime(); System.out.print(worker3.forkTime + " ");
+	  thread3.fork();
+ 		worker4.forkTime = Machine.timer().getTime(); System.out.print(worker4.forkTime + " ");
+   	thread4.fork();
+ 		worker5.forkTime = Machine.timer().getTime(); System.out.print(worker5.forkTime + " ");
+   	thread5.fork();
+ 		worker6.forkTime = Machine.timer().getTime(); System.out.print(worker6.forkTime + " ");
+   	thread6.fork();
+ 		worker7.forkTime = Machine.timer().getTime(); System.out.print(worker7.forkTime + " ");
+   	thread7.fork();
+ 		worker8.forkTime = Machine.timer().getTime(); System.out.print(worker8.forkTime + " ");
+   	thread8.fork();
+ 		worker9.forkTime = Machine.timer().getTime(); System.out.print(worker9.forkTime + " ");
+   	thread9.fork();
 
     // let the threads run for x ticks
     ThreadedKernel.alarm.waitUntil(5000);

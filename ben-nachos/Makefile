@@ -21,7 +21,9 @@ threads =	ThreadedKernel KThread Alarm \
 		Semaphore Lock Condition SynchList \
 		Condition2 Communicator Rider ElevatorController \
 		MultilevelFeedbackScheduler Boat \
-    RoundRobinSchedulerTest MultilevelFeedbackSchedulerTest
+    RoundRobinSchedulerTest MultilevelFeedbackSchedulerTest \
+		MultilevelQueueScheduler MultilevelQueueSchedulerTest \
+
 
 userprog =	UserKernel UThread UserProcess SynchConsole
 

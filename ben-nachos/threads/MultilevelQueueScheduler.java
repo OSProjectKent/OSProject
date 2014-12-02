@@ -125,11 +125,11 @@ public class MultilevelQueueScheduler extends Scheduler {
     }
 
 
-    private int interrupt_interval_counter;
+    public int interrupt_interval_counter;
     
-    private int current_queue;
+    public int current_queue;
     
-    private class MultilevelQueue extends ThreadQueue {
+    public class MultilevelQueue extends ThreadQueue {
         
         /*
          * Initialize MultilevelQueue object; allocate three empty linked lists for the wait queue.
@@ -223,6 +223,6 @@ public class MultilevelQueueScheduler extends Scheduler {
             }
         }
         
-        private Vector<LinkedList<KThread>> wait_queue;
+        public Vector<LinkedList<KThread>> wait_queue;
     }
 }

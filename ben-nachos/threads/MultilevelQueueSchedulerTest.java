@@ -1,5 +1,6 @@
 package nachos.threads;
 
+import java.util.*;
 import nachos.machine.Machine;
 
 public class MultilevelQueueSchedulerTest {
@@ -16,25 +17,33 @@ public class MultilevelQueueSchedulerTest {
     System.out.println("## MultilevelQueueScheduler project ends ##");
     System.out.println("###########################################");
   }
+
+	public LinkedList<String> arrival;
+	public LinkedList<String> terminate;
       
-  private static class ThreadTask implements Runnable {
+  public static class ThreadTask implements Runnable {
     
-    private final int id;
-    private boolean terminated;
-//  private boolean io;
+    public final int id;
+    public boolean terminated;
+		public long constructTime;
+		public long terminatedTime;
+
+//  public boolean io;
 
     public ThreadTask(int id) {
       this.id = id;
       this.terminated = false;
+			this.constructTime = Machine.timer().getTime();
+			System.out.println("Job #" + id + " has started");
     } 
 
     public void terminate() {
+			this.terminatedTime = Machine.timer().getTime();
       this.terminated = true;
     }
     
     @Override
     public void run() {
-      System.out.println("MultilevelQueueSchedulerTest.run()");
       // Do stuff here
 
       //print thread name 
@@ -49,7 +58,7 @@ public class MultilevelQueueSchedulerTest {
     }
   }
 
-  private static void run_Project() {
+  public static void run_Project() {
     System.out.println("\n### Running MLQS project ###");
 
     // create workers

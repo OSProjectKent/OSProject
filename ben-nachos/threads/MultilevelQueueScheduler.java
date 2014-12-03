@@ -55,7 +55,7 @@ public class MultilevelQueueScheduler extends Scheduler {
     @Override
     public boolean timerInterrupt() {
         ++interrupt_interval_counter;
-				System.out.println("### timerInterrupt()");        
+//				System.out.println("### timerInterrupt()");        
         /*
 				 * Change current queue if necessary 
 				 * This controls the current queue to pull threads from.
@@ -65,21 +65,21 @@ public class MultilevelQueueScheduler extends Scheduler {
 				 */
         if(current_queue == 0){
             // First queue has a sixteen interrupt interval time slice.
-            if(interrupt_interval_counter >= 8){
+            if(interrupt_interval_counter >= 6){
                 current_queue = 1;
                 interrupt_interval_counter = 0;
             }
         }
         else if(current_queue == 1){
             // Second queue has an eight interrupt interval time slice.
-            if(interrupt_interval_counter >= 4){
+            if(interrupt_interval_counter >= 3){
                 current_queue = 2;
                 interrupt_interval_counter = 0;
             }
         }
         else {
             // Third queue has a four interrupt interval time slice.
-            if(interrupt_interval_counter >= 2){
+            if(interrupt_interval_counter >= 1){
                 current_queue = 0;
                 interrupt_interval_counter = 0;
             }
@@ -91,7 +91,7 @@ public class MultilevelQueueScheduler extends Scheduler {
 				*/
         if(current_queue == 0){
             System.out.println("CURRENT QUEUE: " + current_queue);
-//            System.out.println("\nYIELDING AT: " + Machine.timer().getTime());
+            System.out.println("\nYIELDING AT: " + Machine.timer().getTime());
             // Yield every 500 ticks for first queue.
 						//(i.e. every time timerInterrupt() is invoked)
             return true;
@@ -99,7 +99,7 @@ public class MultilevelQueueScheduler extends Scheduler {
         else if(current_queue == 1){
             if(interrupt_interval_counter % 2 == 0){
                 System.out.println("CURRENT QUEUE: " + current_queue);
-//                System.out.println("\nYIELDING AT: " + Machine.timer().getTime());
+                System.out.println("\nYIELDING AT: " + Machine.timer().getTime());
                 // Yield every 1000 ticks for second queue. 
 								//(i.e. every two invocations of timerInterrupt())
                 return true;
@@ -124,6 +124,9 @@ public class MultilevelQueueScheduler extends Scheduler {
         MultilevelQueueSchedulerTest.runProject();
     }
 
+		public void printStatus() {
+			
+		}
 
     public int interrupt_interval_counter;
     
@@ -215,15 +218,6 @@ public class MultilevelQueueScheduler extends Scheduler {
          */
         @Override
         public void print() {
-            Lib.assertTrue(Machine.interrupt().disabled());
-            for(int i = 0; i < wait_queue.size(); ++i){
-                for(int j = 0; j < wait_queue.get(i).size(); ++j){
-                    System.out.println(wait_queue.get(i).get(j).getName());
-                }
-            }
-        }
-
-        public void printStatus() {
             Lib.assertTrue(Machine.interrupt().disabled());
             for(int i = 0; i < wait_queue.size(); ++i){
                 for(int j = 0; j < wait_queue.get(i).size(); ++j){

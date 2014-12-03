@@ -46,7 +46,7 @@ public class MultilevelQueueSchedulerTest {
     
     @Override
     public void run() {
-			System.out.println("### run()");
+//			System.out.println("### run()");
       // Do stuff here
 
       //print thread name 
@@ -127,8 +127,6 @@ public class MultilevelQueueSchedulerTest {
    	thread9.fork();
 		System.out.println("\n\n");
 
-		//print initial status of queues
-//		MultilevelQueue.printStatus();
 
     // let the threads run for x ticks
     ThreadedKernel.alarm.waitUntil(5000);

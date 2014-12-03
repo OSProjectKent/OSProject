@@ -411,6 +411,8 @@ public class KThread {
    *          destroyed by the new thread.
    */
   private void run() {
+
+		System.out.println("\nKThread.run() | " + Machine.timer().getTime());
     Lib.assertTrue(Machine.interrupt().disabled());
 
     Machine.yield();
@@ -421,6 +423,10 @@ public class KThread {
         + " to: " + toString());
 
     currentThread = this;
+		int i = this.id - 1;	
+		if (this.id != 0) { System.out.println("the currently running job is: Job #" + (this.id - 1) );}
+		else { System.out.println("This is not a user job: Job# " + this.id);}
+		System.out.println("");
 
     tcb.contextSwitch();
 

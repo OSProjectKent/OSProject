@@ -80,6 +80,8 @@ public class KThread {
    */
   private int id = numCreated++;
 
+	private static int jobNumber = 0;
+
   /** Number of times the KThread constructor was called. */
   private static int numCreated = 0;
 
@@ -412,7 +414,9 @@ public class KThread {
    */
   private void run() {
 
-		System.out.println("\nKThread.run() | " + Machine.timer().getTime());
+		System.out.println("\n################");
+		System.out.println("Run number: " + jobNumber + " | at time: " + Machine.timer().getTime());
+		jobNumber = jobNumber + 1;
     Lib.assertTrue(Machine.interrupt().disabled());
 
     Machine.yield();
@@ -424,7 +428,7 @@ public class KThread {
 
     currentThread = this;
 		int i = this.id - 1;	
-		if (this.id != 0) { System.out.println("the currently running job is: Job #" + (this.id - 1) );}
+		if (this.id != 0) { System.out.println("Running Job #" + (this.id - 1));}
 		else { System.out.println("This is not a user job: Job# " + this.id);}
 		System.out.println("");
 

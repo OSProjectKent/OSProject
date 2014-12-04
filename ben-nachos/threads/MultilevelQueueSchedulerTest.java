@@ -55,7 +55,7 @@ public class MultilevelQueueSchedulerTest {
 
       // Do 800 'ticks' of computation
       while(!terminated) {
-			  int randomNum = r.nextInt((1800) + 1) + 300;
+			  int randomNum = r.nextInt((2400) + 1) + 300;
 				System.out.println("Job #" + id + " has " + randomNum + " computation ticks");
         Machine.interrupt().tick(randomNum);
 				terminate();

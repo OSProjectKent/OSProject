@@ -1,0 +1,7 @@
+img.slide
+{ /* Specify background color */
+background-color: #060; 
+  padding: 40px; 
+  border: 2px solid white;
+  display: inline-block;
+}

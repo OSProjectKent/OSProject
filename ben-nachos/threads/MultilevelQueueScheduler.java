@@ -37,9 +37,9 @@ public class MultilevelQueueScheduler extends Scheduler {
     /*
      * Allocate a new multilevel thread queue.
      *
-     * @param transferPriority
+     * transferPriority
      *          ignored; no priority donation implemented.
-     * @return a new multilevel thread queue.
+     * Returns a new multilevel thread queue.
      */
     @Override
     public ThreadQueue newThreadQueue(boolean transferPriority) {
@@ -90,26 +90,29 @@ public class MultilevelQueueScheduler extends Scheduler {
         * (CHANGED 12-1) Change queue_num to current_queue
 				*/
         if(current_queue == 0){
-            System.out.println("CURRENT QUEUE: " + current_queue);
-            System.out.println("\nYIELDING AT: " + Machine.timer().getTime());
+            System.out.println("\nThe current queue running is: " + current_queue);
+            System.out.println("Computation yielding at: " + Machine.timer().getTime() + " Ticks");
             // Yield every 500 ticks for first queue.
 						//(i.e. every time timerInterrupt() is invoked)
             return true;
         }
         else if(current_queue == 1){
+ 	    
+            
             if(interrupt_interval_counter % 2 == 0){
-                System.out.println("CURRENT QUEUE: " + current_queue);
-                System.out.println("\nYIELDING AT: " + Machine.timer().getTime());
+		System.out.println("\nThe current queue running is: " + current_queue);
+		System.out.println("Computation yielding at: " + Machine.timer().getTime() + " Ticks");
                 // Yield every 1000 ticks for second queue. 
 								//(i.e. every two invocations of timerInterrupt())
                 return true;
             }
-            else {
+            else{
+
                 return false;
             }
         }
         else {
-            System.out.println("\nCURRENT QUEUE: " + current_queue);
+            System.out.println("\nThe current queue running is: " + current_queue);
             // Never yield for last queue; FCFS until third queue's slice expires.
             return false;
         }
@@ -138,18 +141,17 @@ public class MultilevelQueueScheduler extends Scheduler {
          * Initialize MultilevelQueue object; allocate three empty linked lists for the wait queue.
          */
         public MultilevelQueue(){
+	    //Creates 'spaces' for linked lists
             wait_queue = new Vector<LinkedList<KThread>>(3);
-            for(int i = 0; i < 3; ++i){
+            //Adds linked lists to the wait_queue in the for loop
+	    for(int i = 0; i < 3; ++i){
                 wait_queue.add(new LinkedList<KThread>());
             }
         }
         
         
         /*
-         * Append a thread to the end of the appropriate queue.
-         *
-         * @param thread
-         *          the thread added to the wait queue.
+         * When a job is interrupted or newly created its added to the wait queue and it adds it to that queue
          */
         @Override
         public void waitForAccess(KThread thread) {
@@ -165,41 +167,50 @@ public class MultilevelQueueScheduler extends Scheduler {
             wait_queue.get(priority).add(thread);
         }
         
-        /**
-         * Remove a thread from the beginning of the current queue.
-         *
-         * @return the first thread on the current queue, or null if all queues are
+        /*
+         * Checks each queue to see if empty in order to save time from processing empty queues
+	 * Uses a KThread type in order to keep track of this as well as the current_queue value
+	 * Mod 3 is used in in case it is ont on wait_queue 0
+         * Returns the first thread on the current queue, or null if all queues are
          *         empty.
          */
         @Override
         public KThread nextThread(){
-            Lib.assertTrue(Machine.interrupt().disabled());
-        
-            KThread next;
-            if(!wait_queue.get(current_queue).isEmpty()){
-                next = wait_queue.get(current_queue).removeFirst();
-                // System.out.println("\nSWITCHED TO: " + next.getName());
-                return  next;
-            }
-            else if(!wait_queue.get((current_queue + 1) % 3).isEmpty()){
-                next = wait_queue.get((current_queue + 1) % 3).removeFirst();
-                // System.out.println("\nSWITCHED TO: " + next.getName());
-                return next;
-            }
-            else if(!wait_queue.get((current_queue + 2) % 3).isEmpty()){
-                next = wait_queue.get((current_queue + 2) % 3).removeFirst();
-                // System.out.println("\nSWITCHED TO: " + next.getName());
-                return next;
-            }
-            else{
-                return null;
-            }
+            Lib.assertTrue(Machine.interrupt().disabled()); //Logs if interupt is disabled
+	    
+	    //Thread that will be returned in order to process the next job
+	    KThread nextJob;
+            //KThread 
+	    
+	    if(wait_queue.get(current_queue).isEmpty() == false)
+		{
+		    nextJob = wait_queue.get(current_queue).removeFirst();
+		    System.out.println("Job switching to: " + nextJob.getName());
+		    return nextJob;
+		}
+	    else if(wait_queue.get((current_queue + 1) % 3).isEmpty() == false)
+		{
+		    nextJob = wait_queue.get((current_queue + 1) % 3).removeFirst();
+		    System.out.println("Job switching to: " + nextJob.getName());
+		    return nextJob;
+		}
+	    else if(wait_queue.get((current_queue + 2) % 3).isEmpty() == false)
+		{
+		    nextJob = wait_queue.get((current_queue + 2) % 3).removeFirst();
+		    System.out.println("Job switching to: " + nextJob.getName());
+		    return nextJob;
+		}
+            else
+		{
+		    System.out.println("\nALL QUEUES ARE EMPTY");
+		    return null;
+		}
         }
         
-        /*
+        /* 
          * The specified thread has received exclusive access, without using
          * waitForAccess() or nextThread(). Assert that no threads
-         * are waiting for access.
+         * are waiting for access. 
          */
         @Override
         public void acquire(KThread thread) {
@@ -214,7 +225,7 @@ public class MultilevelQueueScheduler extends Scheduler {
         }
         
         /*
-         * Print the contents of the wait queue.
+         * Print the contents of the wait queue usually not used
          */
         @Override
         public void print() {
@@ -226,6 +237,7 @@ public class MultilevelQueueScheduler extends Scheduler {
             }
         }
         
+	//Wait Queue initialized
         public Vector<LinkedList<KThread>> wait_queue;
     }
 }

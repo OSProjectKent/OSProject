@@ -90,9 +90,13 @@ public class MultilevelQueueScheduler extends Scheduler {
         * (CHANGED 12-1) Change queue_num to current_queue
 				*/
         if(current_queue == 0){
-            System.out.println("\nThe current queue running is: " + current_queue);
+//            System.out.println("\nThe current queue running is: " + current_queue);
             System.out.println("Computation yielding at: " + Machine.timer().getTime() + " Ticks");
-            // Yield every 500 ticks for first queue.
+ 						//separate running instances by time quantum
+						System.out.println("\n\n##########\n");
+
+
+           // Yield every 500 ticks for first queue.
 						//(i.e. every time timerInterrupt() is invoked)
             return true;
         }
@@ -100,9 +104,13 @@ public class MultilevelQueueScheduler extends Scheduler {
  	    
             
             if(interrupt_interval_counter % 2 == 0){
-		System.out.println("\nThe current queue running is: " + current_queue);
+//		System.out.println("\nThe current queue running is: " + current_queue);
 		System.out.println("Computation yielding at: " + Machine.timer().getTime() + " Ticks");
-                // Yield every 1000 ticks for second queue. 
+ 						//separate running instances by time quantum
+						System.out.println("\n\n##########\n");
+
+
+               // Yield every 1000 ticks for second queue. 
 								//(i.e. every two invocations of timerInterrupt())
                 return true;
             }
@@ -112,10 +120,14 @@ public class MultilevelQueueScheduler extends Scheduler {
             }
         }
         else {
-            System.out.println("\nThe current queue running is: " + current_queue);
-            // Never yield for last queue; FCFS until third queue's slice expires.
+//            System.out.println("\nThe current queue running is: " + current_queue);
+						//separate running instances by time quantum
+						System.out.println("\n\n##########\n");
+        
+				    // Never yield for last queue; FCFS until third queue's slice expires.
             return false;
         }
+
     } //end timerInterrupt()
     
 		/* getter for current_queue */
@@ -181,21 +193,24 @@ public class MultilevelQueueScheduler extends Scheduler {
 	    //Thread that will be returned in order to process the next job
 	    KThread nextJob;
             //KThread 
-	    
+			System.out.println("Trying to pull job from Queue #" + current_queue);	    
 	    if(wait_queue.get(current_queue).isEmpty() == false)
 		{
+				System.out.println("Able to pull job from Queue #" + current_queue);
 		    nextJob = wait_queue.get(current_queue).removeFirst();
-		    System.out.println("Job switching to: " + nextJob.getName());
+		    System.out.println("Job switching to:: " + nextJob.getName());
 		    return nextJob;
 		}
 	    else if(wait_queue.get((current_queue + 1) % 3).isEmpty() == false)
 		{
+				System.out.println("Queue #" + current_queue + " is empty, pulling from queue #" + ((current_queue + 1) % 3) + " instead");
 		    nextJob = wait_queue.get((current_queue + 1) % 3).removeFirst();
 		    System.out.println("Job switching to: " + nextJob.getName());
 		    return nextJob;
 		}
 	    else if(wait_queue.get((current_queue + 2) % 3).isEmpty() == false)
 		{
+				System.out.println("Queue #" + current_queue + " is empty, pulling from queue #" + ((current_queue + 2) % 3) + " instead");
 		    nextJob = wait_queue.get((current_queue + 2) % 3).removeFirst();
 		    System.out.println("Job switching to: " + nextJob.getName());
 		    return nextJob;

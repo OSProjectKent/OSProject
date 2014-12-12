@@ -50,6 +50,7 @@ this.id = id;
 
         Machine.interrupt().tick(interrupt_value);
         terminate();
+				System.out.println("Job #" + id + "has finished, WOOHOOOOOO!!!");
       }
 
    }
@@ -72,21 +73,21 @@ this.id = id;
 
   //Array of workers
   ThreadTask[] workers;
-  workers = new ThreadTask[9];
+  workers = new ThreadTask[15];
 
   //Array of threads
   KThread[] threads;
-  threads = new KThread[9];
+  threads = new KThread[15];
 
   //Initializes workers and threads
-  for(int i=0; i < 9; ++i){
+  for(int i=0; i < 15; ++i){
     workers[i] = new ThreadTask(i);
     threads[i] = new KThread(workers[i]);
     threads[i].setName(Integer.toString(i));
   }
 
   //Fork threads to the queue
-  for(int i=0; i < 9; ++i){
+  for(int i=0; i < 15; ++i){
     workers[i].forkTime = Machine.timer().getTime();
     threads[i].fork();
   }
@@ -95,7 +96,7 @@ this.id = id;
   ThreadedKernel.alarm.waitUntil(5000); //Each thread now limited to 5000 ticks
 
   //Joins threads
-  for(int i=0; i < 9; ++i){
+  for(int i=0; i < 15; ++i){
     threads[i].join();
   }
 

@@ -414,7 +414,7 @@ public class KThread {
    */
   private void run() {
 
-		System.out.println("\n################");
+//		System.out.println("\n################");
 		System.out.println("Run number: " + jobNumber + " | at time: " + Machine.timer().getTime());
 		jobNumber = jobNumber + 1;
     Lib.assertTrue(Machine.interrupt().disabled());

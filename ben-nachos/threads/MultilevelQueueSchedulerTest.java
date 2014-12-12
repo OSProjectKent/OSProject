@@ -5,23 +5,8 @@ import nachos.machine.Machine;
 
 public class MultilevelQueueSchedulerTest {
 
-
-
-  public static void runProject() {
-    System.out.println("#############################################");
-    System.out.println("## MultilevelQueueScheduler project begins ##");
-    System.out.println("#############################################");
-
-    //run the project
-    run_Project();
-
-    System.out.println("###########################################");
-    System.out.println("## MultilevelQueueScheduler project ends ##");
-    System.out.println("###########################################");
-  }
-
-	public LinkedList<String> arrival;
-	public LinkedList<String> terminate;
+public LinkedList<String> arrival;
+public LinkedList<String> terminate;
       
   public static class ThreadTask implements Runnable {
     
@@ -46,117 +31,82 @@ this.id = id;
 			this.terminatedTime = Machine.timer().getTime();
       this.terminated = true;
     }
-    
+
+/*
+*
+*  Determines a random amount of time before job is interrupted  
+*
+*/    
     @Override
     public void run() {
-//			System.out.println("### run()");
-      // Do stuff here
 
-      //print thread name 
-//      System.out.print("thread " + KThread.currentThread().getName() + " started");
-//			System.out.println(" | " + Machine.timer().getTime());
+      while(!terminated){
+        Random rand = new Random();
+        int range = 2701; //max value is 2701 to avoid super lengthy waits
+        
+        int interrupt_value = rand.nextInt(range - 300) + 300; //minimum value is 300
+        System.out.println("Job will interrupt after: " + interrupt_value + " ticks");
+        System.out.println();        
 
-      // Do 800 'ticks' of computation
-      while(!terminated) {
-			  int randomNum = r.nextInt((2400) + 1) + 300;
-				System.out.println("Job #" + id + " has " + randomNum + " computation ticks");
-        Machine.interrupt().tick(randomNum);
-				terminate();
+        Machine.interrupt().tick(interrupt_value);
+        terminate();
       }
 
-      
-    }
+   }
   }
 
-  public static void run_Project() {
-    System.out.println("\n### Running MLQS project ###");
-		System.out.println();
+/*
+*
+* Makes and initializes workers and threads, starts jobs, ends when jobs are finished.
+*
+*/
 
-		System.out.println("### create jobs ###");
-    // create workers
-    ThreadTask worker1 = new ThreadTask(1);
-    ThreadTask worker2 = new ThreadTask(2);
-    ThreadTask worker3 = new ThreadTask(3);
-    ThreadTask worker4 = new ThreadTask(4);
-    ThreadTask worker5 = new ThreadTask(5);
-    ThreadTask worker6 = new ThreadTask(6);
-    ThreadTask worker7 = new ThreadTask(7);
-    ThreadTask worker8 = new ThreadTask(8);
-    ThreadTask worker9 = new ThreadTask(9);
+  public static void runProject() {
 
-    // initialize new threads to run workers
-    KThread thread1 = new KThread(worker1);
-    KThread thread2 = new KThread(worker2);
-    KThread thread3 = new KThread(worker3);
-    KThread thread4 = new KThread(worker4);
-    KThread thread5 = new KThread(worker5);
-    KThread thread6 = new KThread(worker6);
-    KThread thread7 = new KThread(worker7);
-    KThread thread8 = new KThread(worker8);
-    KThread thread9 = new KThread(worker9);
+  System.out.println("___________________________________");
+  System.out.println("|                                 |");
+  System.out.println("| MULTILEVELQUEUESCHEDULER START  |");
+  System.out.println("|                                 |");
+  System.out.println("|_________________________________|");
+  System.out.println();
 
-    // name the threads
-    thread1.setName("1");
-    thread2.setName("2");
-    thread3.setName("3");
-    thread4.setName("4");
-    thread5.setName("5");
-    thread6.setName("6");
-    thread7.setName("7");
-    thread8.setName("8");
-    thread9.setName("9");
+  //Array of workers
+  ThreadTask[] workers;
+  workers = new ThreadTask[9];
 
-    // start running the threads
+  //Array of threads
+  KThread[] threads;
+  threads = new KThread[9];
 
-		System.out.println("\n");
-		System.out.println("### move jobs to queue ###");
-		worker1.forkTime = Machine.timer().getTime();
-    thread1.fork();
-		worker2.forkTime = Machine.timer().getTime();
-    thread2.fork();
-		worker3.forkTime = Machine.timer().getTime();
-	  thread3.fork();
- 		worker4.forkTime = Machine.timer().getTime();
-   	thread4.fork();
- 		worker5.forkTime = Machine.timer().getTime();
-   	thread5.fork();
- 		worker6.forkTime = Machine.timer().getTime();
-   	thread6.fork();
- 		worker7.forkTime = Machine.timer().getTime();
-   	thread7.fork();
- 		worker8.forkTime = Machine.timer().getTime();
-   	thread8.fork();
- 		worker9.forkTime = Machine.timer().getTime();
-   	thread9.fork();
-		System.out.println("\n\n");
-
-
-    // let the threads run for x ticks
-    ThreadedKernel.alarm.waitUntil(5000);
-
-    //kill threads
-/*    worker1.terminate();
-    worker2.terminate();
-    worker3.terminate();
-    worker4.terminate();
-    worker5.terminate();
-    worker6.terminate();
-    worker7.terminate();
-    worker8.terminate();
-    worker9.terminate(); */
-
-    //wait until all threads are done
-    thread1.join();
-    thread2.join();
-    thread3.join();
-    thread4.join();
-    thread5.join();
-    thread6.join();
-    thread7.join();
-    thread8.join();
-    thread9.join();
-
-   //fine
-    System.out.println("\n### Finished MLQS project ###");
+  //Initializes workers and threads
+  for(int i=0; i < 9; ++i){
+    workers[i] = new ThreadTask(i);
+    threads[i] = new KThread(workers[i]);
+    threads[i].setName(Integer.toString(i));
   }
+
+  //Fork threads to the queue
+  for(int i=0; i < 9; ++i){
+    workers[i].forkTime = Machine.timer().getTime();
+    threads[i].fork();
+  }
+
+  //Alarm
+  ThreadedKernel.alarm.waitUntil(5000); //Each thread now limited to 5000 ticks
+
+  //Joins threads
+  for(int i=0; i < 9; ++i){
+    threads[i].join();
+  }
+
+  System.out.println();
+  System.out.println("___________________________________");
+  System.out.println("|                                 |");
+  System.out.println("| MULTILEVELQUEUESCHEDULER FINISH |");
+  System.out.println("|                                 |");
+  System.out.println("|_________________________________|");
+
+
+
+ }
 }
